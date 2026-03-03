@@ -16,6 +16,11 @@
 			path = ReactivChallengeKit;
 			sourceTree = "<group>";
 		};
+		74AB00012F525C060097EC9A /* ../Submissions */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ../Submissions;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +38,7 @@
 			isa = PBXGroup;
 			children = (
 				7409D7EB2F525C060097EC9A /* ReactivChallengeKit */,
+				74AB00012F525C060097EC9A /* ../Submissions */,
 				7409D7EA2F525C060097EC9A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -275,6 +281,13 @@
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
+				EXCLUDED_RESOURCE_FILE_NAMES = "_template/* */_template/* ../Submissions/_template/* ../Submissions/_template/**/*";
+				EXCLUDED_SOURCE_FILE_NAMES = (
+					"_template/*.swift",
+					"*/_template/*.swift",
+					"../Submissions/_template/*.swift",
+					"../Submissions/_template/**/*.swift",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -318,6 +331,13 @@
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
+				EXCLUDED_RESOURCE_FILE_NAMES = "_template/* */_template/* ../Submissions/_template/* ../Submissions/_template/**/*";
+				EXCLUDED_SOURCE_FILE_NAMES = (
+					"_template/*.swift",
+					"*/_template/*.swift",
+					"../Submissions/_template/*.swift",
+					"../Submissions/_template/**/*.swift",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
