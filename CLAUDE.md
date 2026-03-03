@@ -83,9 +83,21 @@ The README contains four example problem statements from Reactiv:
 1. **AI-Powered Personalization** - Context-driven recommendations with no login or history
 2. **In-Store Companion Shopping** - Product browsing and self-checkout via Clip
 3. **Ad-to-Clip Commerce** - Ad-driven native shopping with cart persistence and push notifications
-4. **Live Events** - Fan identity capture, merch sales, and real-time engagement at venues
+4. **Live Events** - Fan identity capture, merch sales, and real-time engagement at venues (includes concert-goer lifecycle touchpoints: Discovery, Ticket Purchase, The Wait, Show Day, Post-Show Afterglow)
 
 Participants can pick one, combine elements, or invent their own. For checkout-related challenges, Shopify Storefront API + CheckoutSheet Kit or Stripe are recommended.
+
+## Assumptions & Constraints
+
+- iOS only — Reactiv Clips are Apple technology; over 80% of North American mobile commerce is on iPhone
+- No trivial builds (e.g., coupon/discount apps with no depth)
+- Think commercially and technically — aim for solutions that could ship
+- Reasonable assumptions allowed where integrations are unavailable
+- All implementations must be runnable Swift-based Clips built on this starter kit
+
+## What You Should Deliver
+
+Submissions should address: problem framing, proposed solution, platform extensions (if applicable), prototype/mockup, and impact hypothesis. See README for full details.
 
 ## Submission Workflow
 
