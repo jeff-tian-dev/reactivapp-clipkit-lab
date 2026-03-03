@@ -128,17 +128,36 @@ Consider the full lifecycle of a concert-goer when deciding where your solution 
 
 No dependencies. No SPM packages. If Xcode works, the project works.
 
+### First 60 Seconds (copy/paste)
+
+```bash
+bash scripts/doctor.sh
+bash scripts/create-submission.sh "Your Team Name"
+bash scripts/generate-registry.sh
+```
+
+Expected result:
+- `Preflight passed.`
+- `Created submission scaffold:` with your folder path
+- `SubmissionRegistry: found ...`
+
 ## How to Build Your Clip
 
-### Step 1: Create Your File
+### Step 1: Create your submission scaffold
 
-Duplicate `Examples/EmptyClipExperience.swift` and rename it.
+Use the helper script:
+
+```bash
+bash scripts/create-submission.sh "Your Team Name"
+```
+
+This creates `Submissions/<team-slug>/` from template, renames the Swift file to a unique `ClipExperience` type, and pre-fills team details.
 
 ### Step 2: Conform to the Protocol
 
 ```swift
 struct MyClipExperience: ClipExperience {
-    static let urlPattern = "myapp.com/action/:id"
+    static let urlPattern = "example.com/your-team/:id"
     static let clipName = "My Clip"
     static let clipDescription = "One line about what it does."
 
@@ -152,21 +171,24 @@ struct MyClipExperience: ClipExperience {
 }
 ```
 
-### Step 3: Register Your Clip
+### Step 3: Build (auto-register)
 
-Open `Simulator/ClipRouter.swift` and add your type to `allExperiences`:
-
-```swift
-static let allExperiences: [any ClipExperience.Type] = [
-    VenueMerchExperience.self,
-    TrailCheckInExperience.self,
-    MyClipExperience.self,  // <-- add this
-]
-```
+No manual router edits are needed. The build script auto-discovers clips in `Submissions/` and generates the registry.
 
 ### Step 4: Test It
 
-Run the app, type your invocation URL in the console (e.g., `myapp.com/action/42`), and tap the send button. Or tap a registered clip card on the landing page.
+Run the app, type your invocation URL in the console (e.g., `example.com/your-team/:param`), and tap send. Or tap your registered clip card on the landing page.
+
+### Common Setup Issues
+
+- `create-submission.sh` says folder exists
+  - Pick another team name or remove old folder in `Submissions/`
+- Build says invalid redeclaration
+  - You likely reused a struct name; run scaffold script again with a unique experience name
+- Clip does not appear on landing
+  - Build once in Xcode or run `bash scripts/generate-registry.sh`
+- Script says template missing
+  - Run commands from repo root and verify `Submissions/_template` exists
 
 ## What You Get
 
