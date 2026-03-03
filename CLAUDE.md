@@ -79,7 +79,7 @@ Existing examples: `HelloClipExperience` (minimal), `TrailCheckInExperience` (st
 
 ## App Clip Constraints (design rules)
 
-See `CONSTRAINTS.md` for full details. Key constraints clips must respect:
+See `ReactivChallengeKit/CONSTRAINTS.md` for full details. Key constraints clips must respect:
 - URL-invoked only (no app icon launch)
 - Ephemeral: no persistent storage, no login, no onboarding
 - Single focused task, value delivered in ≤30 seconds
