@@ -1,15 +1,15 @@
 name: PR Validation - ClipKit Build
 
 on:
-  pull_request:
+  push:
     branches:
       - main
+  pull_request:
     types:
       - opened
-      - synchronize
       - reopened
+      - synchronize
       - ready_for_review
-  workflow_dispatch:
 
 concurrency:
   group: clipkit-pr-validation-${{ github.event.pull_request.number || github.ref }}
