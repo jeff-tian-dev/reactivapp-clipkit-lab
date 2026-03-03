@@ -7,6 +7,8 @@
 import SwiftUI
 
 struct LandingView: View {
+    private static let reactivLogoURL = URL(string: "https://cdn.shopify.com/s/files/1/0654/2458/8973/files/reactiv_logo_lightbg-cropped_1322x342.png?v=1762787994")
+
     @Bindable var router: ClipRouter
     @State private var selectedTouchpoint: JourneyTouchpoint = .utility
 
@@ -43,17 +45,9 @@ struct LandingView: View {
 
     private var labBanner: some View {
         return HStack(spacing: 14) {
-            Image(systemName: "appclip")
-                .font(.system(size: 26))
-                .foregroundStyle(.secondary)
-                .frame(width: 50, height: 50)
-                .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 14))
+            reactivLogoMark
 
             VStack(alignment: .leading, spacing: 3) {
-                Text("REACTIV")
-                    .font(.system(size: 10, weight: .heavy))
-                    .tracking(2)
-                    .foregroundStyle(.blue)
                 Text("ClipKit Lab")
                     .font(.system(size: 21, weight: .bold))
                     .foregroundStyle(.primary)
@@ -67,6 +61,32 @@ struct LandingView: View {
         .padding(16)
         .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 22))
         .padding(.horizontal, 16)
+    }
+
+    private var reactivLogoMark: some View {
+        Group {
+            if let url = Self.reactivLogoURL {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFit()
+                    default:
+                        Image(systemName: "appclip")
+                            .font(.system(size: 26))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            } else {
+                Image(systemName: "appclip")
+                    .font(.system(size: 26))
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .frame(width: 92, height: 44)
+        .padding(.horizontal, 8)
+        .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 14))
     }
 
     // MARK: - Journey Timeline
