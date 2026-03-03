@@ -1,5 +1,7 @@
 # Reactiv ClipKit Lab
 
+[![PR Validation - ClipKit Build](https://github.com/reactivapp/reactivapp-clipkit-lab/actions/workflows/test.yml/badge.svg)](https://github.com/reactivapp/reactivapp-clipkit-lab/actions/workflows/test.yml)
+
 An App Clip simulator for Hack Canada. Build creative App Clip experiences without needing entitlements, Associated Domains, or an Apple Developer account.
 
 An App Clip is a lightweight slice of an app that lets users complete a specific task quickly without downloading the full app. They can be triggered by:
