@@ -15,6 +15,8 @@ import PhotosUI
 // A scan-to-return App Clip: customer scans QR on packaging and completes
 // a full product return in under 30 seconds — no app, no login, no hold music.
 
+/// A scan-to-return App Clip experience that lets customers complete a product return
+/// in under 30 seconds by scanning a QR code on their packaging.
 struct ReturnclipClipExperience: ClipExperience {
     static let urlPattern = "example.com/returnclip/:orderId/:sku"
     static let clipName = "ReturnClip"
@@ -42,14 +44,18 @@ struct ReturnclipClipExperience: ClipExperience {
     @State private var showingCamera = false
     @State private var returnLabelSuffix = String(format: "%04d", Int.random(in: 1000...9999))
 
+    /// The order ID extracted from the invocation URL path, or `nil` if missing.
     private var orderId: String? {
         context.pathParameters["orderId"]
     }
 
+    /// The SKU extracted from the invocation URL path, or `nil` if missing.
     private var scannedSku: String? {
         context.pathParameters["sku"]
     }
 
+    /// Looks up the order item matching the scanned SKU. Returns `nil` when the SKU
+    /// is missing or doesn't match any known product, triggering the invalid-item view.
     private var scannedItem: ReturnMockData.OrderItem? {
         guard let sku = scannedSku else { return nil }
         return ReturnMockData.orderItems.first { $0.sku == sku }
@@ -92,6 +98,7 @@ struct ReturnclipClipExperience: ClipExperience {
 
     // MARK: - Step 1: Item Scanned Confirmation
 
+    /// Step 1: Displays the scanned item details and prompts the user to start the return.
     private var orderConfirmView: some View {
         VStack(spacing: 20) {
             Spacer()
@@ -153,6 +160,7 @@ struct ReturnclipClipExperience: ClipExperience {
 
     // MARK: - Invalid Item View
 
+    /// Error state shown when the scanned SKU or order ID is missing or unrecognized.
     private var invalidItemView: some View {
         VStack(spacing: 20) {
             Spacer()
@@ -186,6 +194,7 @@ struct ReturnclipClipExperience: ClipExperience {
 
     // MARK: - Step 2: Return Reason
 
+    /// Step 2: Presents a list of return reasons for the user to select.
     private var returnReasonView: some View {
         ScrollView {
             VStack(spacing: 16) {
@@ -225,6 +234,7 @@ struct ReturnclipClipExperience: ClipExperience {
         .animation(.spring(duration: 0.3), value: selectedReason)
     }
 
+    /// Builds a selectable row for a single return reason with icon and checkmark.
     @ViewBuilder
     private func reasonRow(reason: ReturnReason) -> some View {
         let isSelected = selectedReason == reason
@@ -251,6 +261,7 @@ struct ReturnclipClipExperience: ClipExperience {
 
     // MARK: - Step 3: Photo Upload (Camera or Library)
 
+    /// Step 3: Lets the user upload a photo of the item via camera or photo library.
     private var photoCaptureView: some View {
         VStack(spacing: 20) {
             Spacer()
@@ -370,6 +381,7 @@ struct ReturnclipClipExperience: ClipExperience {
 
     // MARK: - Step 4: AI Policy Check
 
+    /// Step 4: Runs a simulated AI policy check with staggered animation, then shows the verdict.
     private var aiCheckView: some View {
         VStack(spacing: 20) {
             Spacer()
@@ -446,6 +458,7 @@ struct ReturnclipClipExperience: ClipExperience {
         }
     }
 
+    /// Renders a single row in the AI analysis checklist with a completion indicator.
     @ViewBuilder
     private func aiCheckRow(icon: String, text: String, done: Bool) -> some View {
         HStack(spacing: 10) {
@@ -468,6 +481,7 @@ struct ReturnclipClipExperience: ClipExperience {
         }
     }
 
+    /// Displays a label–value pair inside the AI verdict policy summary card.
     @ViewBuilder
     private func policyRow(label: String, value: String) -> some View {
         HStack {
@@ -486,6 +500,7 @@ struct ReturnclipClipExperience: ClipExperience {
 
     // MARK: - Step 5: Resolution Choice
 
+    /// Step 5: Presents resolution options (refund, exchange, store credit) for the approved return.
     private var resolutionView: some View {
         ScrollView {
             VStack(spacing: 16) {
@@ -531,6 +546,7 @@ struct ReturnclipClipExperience: ClipExperience {
         .animation(.spring(duration: 0.3), value: selectedResolution)
     }
 
+    /// AI-powered card suggesting a size swap, shown only for wrong-size returns on sized items.
     @ViewBuilder
     private func exchangeRecommendation(for item: ReturnMockData.OrderItem) -> some View {
         VStack(spacing: 10) {
@@ -578,6 +594,7 @@ struct ReturnclipClipExperience: ClipExperience {
         .padding(.horizontal, 20)
     }
 
+    /// Builds a selectable row for a single resolution option with icon and bonus badge.
     @ViewBuilder
     private func resolutionRow(resolution: Resolution) -> some View {
         let isSelected = selectedResolution == resolution
@@ -618,6 +635,7 @@ struct ReturnclipClipExperience: ClipExperience {
 
     // MARK: - Step 6: Confirmation
 
+    /// Step 6: Shows return confirmation with summary, QR label, drop-off instructions, and notification timeline.
     private var confirmationView: some View {
         ScrollView {
             VStack(spacing: 16) {
@@ -709,6 +727,7 @@ struct ReturnclipClipExperience: ClipExperience {
         .scrollIndicators(.hidden)
     }
 
+    /// Renders a label–value row in the return summary card.
     @ViewBuilder
     private func summaryRow(label: String, value: String) -> some View {
         HStack {
@@ -725,6 +744,7 @@ struct ReturnclipClipExperience: ClipExperience {
         .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 12))
     }
 
+    /// Renders a numbered step in the drop-off instructions list.
     @ViewBuilder
     private func dropOffStep(number: Int, text: String) -> some View {
         HStack(alignment: .top, spacing: 10) {
@@ -742,12 +762,14 @@ struct ReturnclipClipExperience: ClipExperience {
 
     // MARK: - Helpers
 
+    /// Transitions the flow to the given step with a spring animation.
     private func advance(to nextStep: ReturnStep) {
         withAnimation(.spring(duration: 0.4)) {
             step = nextStep
         }
     }
 
+    /// Simulates a staggered AI analysis: policy check → photo review → quality assessment → verdict.
     private func runAIAnalysis() {
         isAnalyzing = true
         aiStep1Done = false
@@ -785,7 +807,9 @@ struct ReturnclipClipExperience: ClipExperience {
 
 // MARK: - Camera Picker (UIKit Bridge)
 
+/// UIKit bridge that presents the device camera for photo capture.
 private struct CameraPickerView: UIViewControllerRepresentable {
+    /// Callback invoked with the captured image.
     let onCapture: (UIImage) -> Void
 
     func makeUIViewController(context: Context) -> UIImagePickerController {
@@ -820,6 +844,7 @@ private struct CameraPickerView: UIViewControllerRepresentable {
 
 // MARK: - Supporting Types
 
+/// The sequential steps in the return flow.
 private enum ReturnStep: Hashable {
     case orderConfirm
     case returnReason
@@ -829,6 +854,7 @@ private enum ReturnStep: Hashable {
     case confirmation
 }
 
+/// Reasons a customer may want to return an item.
 private enum ReturnReason: String, CaseIterable, Identifiable {
     case wrongSize = "wrong_size"
     case defective = "defective"
@@ -859,6 +885,7 @@ private enum ReturnReason: String, CaseIterable, Identifiable {
     }
 }
 
+/// Available resolution options for an approved return.
 private enum Resolution: String, CaseIterable, Identifiable {
     case fullRefund = "refund"
     case exchange = "exchange"
@@ -900,6 +927,7 @@ private enum Resolution: String, CaseIterable, Identifiable {
     }
 }
 
+/// The result of the simulated AI return-policy analysis.
 private struct AIVerdict {
     let isEligible: Bool
     let title: String
@@ -912,6 +940,7 @@ private struct AIVerdict {
 
 // MARK: - Mock Data
 
+/// Mock order data used for the return flow demonstration.
 private enum ReturnMockData {
     struct OrderItem: Identifiable, Hashable {
         let id: UUID
