@@ -39,8 +39,8 @@ struct ReturnclipClipExperience: ClipExperience {
         context.pathParameters["sku"] ?? "hoodie"
     }
 
-    private var scannedItem: ReturnMockData.OrderItem {
-        ReturnMockData.orderItems.first { $0.sku == scannedSku } ?? ReturnMockData.orderItems[0]
+    private var scannedItem: ReturnMockData.OrderItem? {
+        ReturnMockData.orderItems.first { $0.sku == scannedSku }
     }
 
     // MARK: - Body
@@ -51,8 +51,13 @@ struct ReturnclipClipExperience: ClipExperience {
 
             switch step {
             case .orderConfirm:
-                orderConfirmView
-                    .transition(.move(edge: .trailing).combined(with: .opacity))
+                if let _ = scannedItem {
+                    orderConfirmView
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                } else {
+                    invalidItemView
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                }
             case .returnReason:
                 returnReasonView
                     .transition(.move(edge: .trailing).combined(with: .opacity))
@@ -86,25 +91,26 @@ struct ReturnclipClipExperience: ClipExperience {
             )
 
             // Scanned item card
+            if let item = scannedItem {
             GlassEffectContainer {
                 HStack(spacing: 14) {
-                    Image(systemName: scannedItem.systemImage)
+                    Image(systemName: item.systemImage)
                         .font(.system(size: 32))
                         .foregroundStyle(.blue)
                         .frame(width: 56, height: 56)
                         .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 14))
 
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(scannedItem.name)
+                        Text(item.name)
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundStyle(.primary)
                         HStack(spacing: 6) {
-                            if let size = scannedItem.size {
+                            if let size = item.size {
                                 Text("Size: \(size)")
                                     .font(.system(size: 13))
                                     .foregroundStyle(.tertiary)
                             }
-                            Text(scannedItem.formattedPrice)
+                            Text(item.formattedPrice)
                                 .font(.system(size: 13, weight: .medium))
                                 .foregroundStyle(.secondary)
                         }
@@ -118,6 +124,7 @@ struct ReturnclipClipExperience: ClipExperience {
                 }
             }
             .padding(.horizontal, 20)
+            }
 
             Text("Want to return this item?")
                 .font(.system(size: 15, weight: .medium))
@@ -127,6 +134,39 @@ struct ReturnclipClipExperience: ClipExperience {
                 selectedItem = scannedItem
                 advance(to: .returnReason)
             }
+
+            Spacer()
+        }
+    }
+
+    // MARK: - Invalid Item View
+
+    private var invalidItemView: some View {
+        VStack(spacing: 20) {
+            Spacer()
+
+            ClipHeader(
+                title: "Item Not Found",
+                subtitle: "Order \(orderId)",
+                systemImage: "exclamationmark.triangle.fill"
+            )
+
+            GlassEffectContainer {
+                VStack(spacing: 8) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 36))
+                        .foregroundStyle(.red)
+                    Text("We couldn't find the scanned item in this order.")
+                        .font(.system(size: 14))
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                    Text("Please check the QR code and try again, or contact support.")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.tertiary)
+                        .multilineTextAlignment(.center)
+                }
+            }
+            .padding(.horizontal, 20)
 
             Spacer()
         }
@@ -231,6 +271,7 @@ struct ReturnclipClipExperience: ClipExperience {
             } else {
                 // Two options: Camera or Photo Library
                 VStack(spacing: 12) {
+                    if UIImagePickerController.isSourceTypeAvailable(.camera) {
                     Button {
                         showingCamera = true
                     } label: {
@@ -249,6 +290,7 @@ struct ReturnclipClipExperience: ClipExperience {
                         }
                         .padding(14)
                         .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 16))
+                    }
                     }
 
                     PhotosPicker(
